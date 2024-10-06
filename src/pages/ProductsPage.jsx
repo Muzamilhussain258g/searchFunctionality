@@ -8,12 +8,16 @@ const ProductsPage = () => {
     let [categories, setCategories] = useState([])
     let [filterByOpt, setFilterByOpt] = useState([])
     let [selectedOption, setSelectedOption] = useState("All");
+    let [isLoading, setIsLoading] = useState(false)
+
 
 
     useEffect(() => {
         let fetchingData = async () => {
+            setIsLoading(true);
             try {
                 let res = await axios.get("https://freetestapi.com/api/v1/cars")
+                setIsLoading(false);
                 setAllData(res.data);
                 let allCategory = [...new Set(res.data.map((el) => el.make))]
                 setCategories(allCategory)
@@ -22,6 +26,7 @@ const ProductsPage = () => {
 
             } catch (error) {
                 console.error(error);
+                setIsLoading(false);
             }
 
         }
@@ -73,6 +78,9 @@ const ProductsPage = () => {
                     </select>
                 </div>
             </div>
+            {
+                isLoading && <div className='flex justify-center w-[100%] mt-32'> <div className='loader'></div> </div>
+            }
             <div className='grid xl:grid-cols-3 md:grid-cols-2 gap-4 mt-10 justify-center'>
                 {
                     filterByOpt.map((el, ind) => (
